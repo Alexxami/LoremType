@@ -5,7 +5,7 @@
 #define COLOR_DIM 8
 #define COLOR_NEXT 9
 
-// Función para convertir un valor hexadecimal a un valor RGB en el rango de 0-1000
+// Function to convert a hexadecimal value to an RGB value in the range of 0-1000
 void hex_to_rgb(int hex, int *r, int *g, int *b) {
     *r = ((hex >> 16) & 0xFF) * 1000 / 255;
     *g = ((hex >> 8) & 0xFF) * 1000 / 255;
@@ -15,40 +15,40 @@ void hex_to_rgb(int hex, int *r, int *g, int *b) {
 void init_colors() {
     start_color();
 
-    // Definir colores personalizados
+    // Define custom colors
     int r, g, b;
 
-    // Fondo (#1e1e2e)
+    // bg (#1e1e2e)
     hex_to_rgb(0x1e1e2e, &r, &g, &b);
-    init_color(10, r, g, b); // Color personalizado para el fondo
+    init_color(10, r, g, b); // Custom bg
 
-    // Verde (#a6e3a1)
+    // Green (#a6e3a1)
     hex_to_rgb(0xa6e3a1, &r, &g, &b);
-    init_color(11, r, g, b); // Color personalizado para el verde
+    init_color(11, r, g, b);
 
-    // Rojo (#f38ba8)
+    // Red (#f38ba8)
     hex_to_rgb(0xf38ba8, &r, &g, &b);
-    init_color(12, r, g, b); // Color personalizado para el rojo
+    init_color(12, r, g, b);
 
-    // Amarillo (#f9e2af)
+    // Yellow (#f9e2af)
     hex_to_rgb(0xf9e2af, &r, &g, &b);
-    init_color(13, r, g, b); // Color personalizado para el amarillo
-
-    // Inicializar pares de colores
-    init_pair(1, COLOR_WHITE, 10);  // Texto claro sobre fondo personalizado
-    init_pair(2, COLOR_WHITE, 10);  // Texto correcto (blanco) sobre fondo personalizado
-    init_pair(3, 12, 10);           // Texto incorrecto (rojo personalizado) sobre fondo personalizado
-    init_pair(4, 11, 10);           // Texto correcto (verde personalizado) sobre fondo personalizado
-    init_pair(5, 13, 10);           // Amarillo personalizado para el contador
-    init_pair(COLOR_DIM, COLOR_BLACK, COLOR_WHITE);  // Botón "next" apagado
-    init_pair(COLOR_NEXT, COLOR_BLACK, 11);          // Botón "next" activo (fondo verde personalizado)
-
-    // Establecer el fondo de toda la pantalla
-    bkgd(COLOR_PAIR(1)); // Usar el par de colores 1 (fondo personalizado)
+    init_color(13, r, g, b); 
+   
+    // Initialize color pairs
+    init_pair(1, COLOR_WHITE, 10);  // Clear text on custom background
+    init_pair(2, COLOR_WHITE, 10);  // Correct text (white) on custom background
+    init_pair(3, 12, 10);           // Incorrect text (custom red) on custom background
+    init_pair(4, 11, 10);           // Correct text (custom green) on custom background
+    init_pair(5, 13, 10);           // Custom yellow for counter
+    init_pair(COLOR_DIM, COLOR_BLACK, COLOR_WHITE);  // Buttom "next" (off)
+    init_pair(COLOR_NEXT, COLOR_BLACK, 11);          // Buttom "next" (on)
+   
+    // Set the screen background
+    bkgd(COLOR_PAIR(1)); 
 }
 
 void print_centered(int y, const char *text) {
-    int x = (COLS - strlen(text)) / 2; // Calcular la posición horizontal para centrar el texto
+    int x = (COLS - strlen(text)) / 2; // Calculate horizontal position to center text
     mvprintw(y, x, "%s", text);
 }
 
@@ -56,17 +56,17 @@ void print_text_with_feedback(const char *target, const char *input, int start_y
     int len = strlen(input);
     for (int i = 0; i < len; i++) {
         if (i < strlen(target) && input[i] == target[i]) {
-            attron(COLOR_PAIR(4)); // Verde personalizado para caracteres correctos
+            attron(COLOR_PAIR(4)); // Green for correct character
             mvaddch(start_y, start_x + i, input[i]);
             attroff(COLOR_PAIR(4));
         } else {
-            attron(COLOR_PAIR(3) | A_UNDERLINE); // Rojo personalizado y subrayado para caracteres incorrectos
+            attron(COLOR_PAIR(3) | A_UNDERLINE); // underline red for incorrect character
             mvaddch(start_y, start_x + i, input[i]);
             attroff(COLOR_PAIR(3) | A_UNDERLINE);
         }
     }
     if (len < strlen(target)) {
-        attron(COLOR_PAIR(1)); // Blanco para el texto restante
+        attron(COLOR_PAIR(1)); 
         mvprintw(start_y, start_x + len, "%s", target + len);
         attroff(COLOR_PAIR(1));
     }
@@ -79,10 +79,10 @@ int main() {
     keypad(stdscr, TRUE);
     curs_set(1);
 
-    // Verificar si la terminal soporta colores personalizados
+    // Check if the terminal supports custom colors
     if (!has_colors() || !can_change_color()) {
         endwin();
-        printf("Tu terminal no soporta colores personalizados.\n");
+        printf("Your terminal does not support custom colors.\n");
         return 1;
     }
 
@@ -108,35 +108,33 @@ int main() {
         const char *target = texts[current_text];
         char input[256] = {0};
         int len = 0;
-        int finished = 0; // Bandera para indicar si el texto se ha completado correctamente
-
-        // Calcular la posición vertical y horizontal para centrar el texto
+        int finished = 0; 
         int start_y = LINES / 2 - 1; // Centrar verticalmente
         int start_x = (COLS - strlen(target)) / 2; // Centrar horizontalmente
 
-        // Mostrar el contador de caracteres en la parte superior (en amarillo personalizado)
+        // Show character counter at the top (in custom yellow)
         attron(COLOR_PAIR(5));
         mvprintw(0, 0, "%d/%d", len, strlen(target));
         attroff(COLOR_PAIR(5));
 
-        // Mostrar el texto objetivo centrado
+        // Show target text centered
         attron(COLOR_PAIR(1));
         print_centered(start_y, target);
         attroff(COLOR_PAIR(1));
 
         while (1) {
-            // Mover el cursor a la posición actual del texto ingresado
+            // Move the cursor to the current position of the entered text
             move(start_y, start_x + len);
 
             int ch = getch();
-            if (!finished) { // Solo procesar entrada si no se ha completado el texto
+            if (!finished) { // Only process input if text has not been completed
                 if (ch == 127 || ch == KEY_BACKSPACE) {
                     if (len > 0) {
                         len--;
                         input[len] = '\0';
                     }
                 } else if (ch >= 32 && ch <= 126) {
-                    if (len < strlen(target)) { // Permitir escribir solo si no se ha alcanzado la longitud del texto objetivo
+                    if (len < strlen(target)) { // Allow typing only if target text length has not been reached
                         input[len] = ch;
                         len++;
                         input[len] = '\0';
@@ -144,44 +142,44 @@ int main() {
                 }
             }
 
-            // Limpiar la línea del texto ingresado
+            // Clear the line of entered text
             move(start_y, start_x);
             clrtoeol();
 
-            // Mostrar el texto con feedback de colores
+            // Show text with color feedback
             print_text_with_feedback(target, input, start_y, start_x);
 
-            // Actualizar el contador de caracteres (en amarillo personalizado)
+            // Update character counter (in custom yellow)
             attron(COLOR_PAIR(5));
             mvprintw(0, 0, "%d/%d", len, strlen(target));
             attroff(COLOR_PAIR(5));
 
-            // Verificar si el texto se ha completado correctamente
+            // Check if the text has been completed correctly
             if (len == strlen(target)) {
                 if (strcmp(input, target) == 0) {
                     finished = 1; // Marcar como completado
-                    // Mostrar el botón "Next" activo
+                    // Show active "Next" button
                     attron(COLOR_PAIR(COLOR_NEXT));
                     print_centered(start_y + 2, "[ Next ]");
                     attroff(COLOR_PAIR(COLOR_NEXT));
                     refresh();
 
-                    // Esperar a que el usuario presione Enter para continuar
+                    // Wait for the user to press Enter to continue
                     while (1) {
                         ch = getch();
                         if (ch == '\n') {
                             break;
                         }
                     }
-                    break; // Pasar al siguiente texto
+                    break; // Skip to next text
                 } else {
-                    // Si hay errores, mostrar el botón "Next" apagado
+                    // If there are errors, show the "Next" button off
                     attron(COLOR_PAIR(COLOR_DIM));
                     print_centered(start_y + 2, "[ Next ]");
                     attroff(COLOR_PAIR(COLOR_DIM));
                 }
             } else {
-                // Si no se ha completado el texto, mostrar el botón "Next" apagado
+                // If the text has not been completed, show the "Next" button off
                 attron(COLOR_PAIR(COLOR_DIM));
                 print_centered(start_y + 2, "[ Next ]");
                 attroff(COLOR_PAIR(COLOR_DIM));
