@@ -23,7 +23,7 @@ Then you must enter the following commands
 ## Execute
 
 ```bash
-    LoremType
+  LoremType
 ```
 
 
