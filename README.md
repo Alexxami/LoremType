@@ -1,3 +1,5 @@
+![Logo](https://github.com/Alexxami/LoremType/blob/main/full-logo.png)
+
 
 # LoremType
 
@@ -26,5 +28,5 @@ Then you must enter the following commands
 
 
 
-![Logo](//imgur.com/a/kIvTzoV)
+
 
