@@ -26,5 +26,5 @@ Then you must enter the following commands
 
 
 
-![Logo](https://imgur.com/a/kIvTzoV)
+![Logo](//imgur.com/a/kIvTzoV)
 
